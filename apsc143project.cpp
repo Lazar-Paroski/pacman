@@ -20,18 +20,18 @@
 
 
 
-void printpacman(char** pacman, int pX, int pY, int g1X, int g1Y, int g2X, int g2Y){
+void printpacman(char** pacman, int pacmanX, int pacmanY, int firstGhostX, int firstGhostY, int secondGhostX, int secondGhostY){
     for (int i = 0; i < 11; i++) {
         for (int j = 0; j < 11; j++) {
-            if(j == g1X && i == g1Y){
+            if(j == firstGhostX && i == firstGhostY){
                 colourChange(13);
                 printf("G  ");
             }
-            else if(j == g2X && i == g2Y){
+            else if(j == secondGhostX && i == secondGhostY){
                 colourChange(13);
                 printf("G  ");
             }
-            else if(j == pX && i == pY){
+            else if(j == pacmanX && i == pacmanY){
                 colourChange(6);
                 printf("P  ");
             }
@@ -54,9 +54,11 @@ int winCheck(int score){
     }
     return 0;
 }
-int loseCheck(int pacmanX, int pacmanY, int ghost1X, int ghost1Y, int ghost2X, int ghost2Y){
-    if( (pacmanX == ghost1X && pacmanY == ghost1Y) || (pacmanX == ghost2X && pacmanY == ghost2Y) )
+int loseCheck(int pacmanX, int pacmanY, int firstGhostX, int firstGhostY, int secondGhostX, int secondGhostY){
+    if( (pacmanX == firstGhostX && pacmanY == firstGhostY)  )
     {
+        return 1;
+    }else if(pacmanX == secondGhostX && pacmanY == secondGhostY){
         return 1;
     }
     return 0;
@@ -65,27 +67,20 @@ int loseCheck(int pacmanX, int pacmanY, int ghost1X, int ghost1Y, int ghost2X, i
 //checking if pacman will run into a wall
 //note: I added surrounding walls to the pacman.txt file, so I only check if it is a wall and don't check for out of bounds
 int isWall(char** map, int xMove, int yMove, char d){
+    if( d == UP && map[yMove-1][xMove] != 'W'){
+        return 1;
+    }
+    else if( d == DOWN && map[yMove+1][xMove] != 'W'){
+        return 1;
+    }
+    else if( d == LEFT && map[yMove][xMove-1] != 'W'){
+        return 1;
+    }
+    else if( d == RIGHT && map[yMove][xMove+1] != 'W'){
+        return 1;
+    }
 
-    if( d == UP && map[yMove-1][xMove] != 'W' )
-    {
-        return 1;
-    }
-    else if( d == LEFT && map[yMove][xMove-1] != 'W' )
-    {
-        return 1;
-    }
-    else if( d == DOWN && map[yMove+1][xMove] != 'W'  )
-    {
-        return 1;
-    }
-    else if( d == RIGHT && map[yMove][xMove+1] != 'W'  )
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    return 0;
 }
 
 char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
@@ -240,88 +235,98 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
 
             int pacmanX = 5;
             int pacmanY = 5;
-            int ghost1X = 1;
-            int ghost1Y = 1;
-            int ghost2X = 9;
-            int ghost2Y = 9;
+            int firstGhostX = 1;
+            int firstGhostY = 1;
+            int secondGhostX = 9;
+            int secondGhostY = 9;
             int points = 0;
-            char g1Move = 's';
-            char g2Move = 'w';
+            char firstGhostMove = 's';
+            char secondGhostMove = 'w';
             char userInput;
 
-            printpacman(pacman, pacmanX, pacmanY, ghost1X, ghost1Y, ghost2X, ghost2Y);
+            printpacman(pacman, pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY);
 
             while (true) {
                 userInput = getch();
-                if (userInput == UP && isWall(pacman, pacmanX, pacmanY, UP) == 1) {
-                    pacmanY -= 1;
-                    if (pacman[pacmanY][pacmanX] == '.') {
-                        pacman[pacmanY][pacmanX] = ' ';
-                        points += 1;
-                    }
-                } else if (userInput == LEFT && isWall(pacman, pacmanX, pacmanY, LEFT) == 1) {
-                    pacmanX -= 1;
-                    if (pacman[pacmanY][pacmanX] == '.') {
-                        pacman[pacmanY][pacmanX] = ' ';
-                        points += 1;
-                    }
-                } else if (userInput == DOWN && isWall(pacman, pacmanX, pacmanY, DOWN) == 1) {
-                    pacmanY += 1;
-                    if (pacman[pacmanY][pacmanX] == '.') {
-                        pacman[pacmanY][pacmanX] = ' ';
-                        points += 1;
-                    }
-                } else if (userInput == RIGHT && isWall(pacman, pacmanX, pacmanY, RIGHT) == 1) {
-                    pacmanX += 1;
-                    if (pacman[pacmanY][pacmanX] == '.') {
-                        pacman[pacmanY][pacmanX] = ' ';
-                        points += 1;
+                if (userInput == UP){
+                    if(isWall(pacman, pacmanX, pacmanY, UP) == 1) {
+                        pacmanY -= 1;
+                        if (pacman[pacmanY][pacmanX] == '.') {
+                            pacman[pacmanY][pacmanX] = ' ';
+                            points += 1;
+                        }
                     }
                 }
-
-                if (loseCheck(pacmanX, pacmanY, ghost1X, ghost1Y, ghost2X, ghost2Y) == 1) {
+                else if (userInput == LEFT){
+                    if (isWall(pacman, pacmanX, pacmanY, LEFT) == 1) {
+                        pacmanX -= 1;
+                        if (pacman[pacmanY][pacmanX] == '.') {
+                            pacman[pacmanY][pacmanX] = ' ';
+                            points += 1;
+                        }
+                    }
+                }
+                else if (userInput == DOWN){
+                    if(isWall(pacman, pacmanX, pacmanY, DOWN) == 1) {
+                        pacmanY += 1;
+                        if (pacman[pacmanY][pacmanX] == '.') {
+                            pacman[pacmanY][pacmanX] = ' ';
+                            points += 1;
+                        }
+                    }
+                }
+                else if (userInput == RIGHT){
+                    if(isWall(pacman, pacmanX, pacmanY, RIGHT) == 1) {
+                        pacmanX += 1;
+                        if (pacman[pacmanY][pacmanX] == '.') {
+                            pacman[pacmanY][pacmanX] = ' ';
+                            points += 1;
+                        }
+                    }
+                }
+                if (loseCheck(pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY) == 1) {
                     system("CLS");
-                    printpacman(pacman, pacmanX, pacmanY, ghost1X, ghost1Y, ghost2X, ghost2Y);
+                    printpacman(pacman, pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY);
                     printf("Sorry, you lose. Press any key to exit the game\n");
                     system("pause");
                     break;
                 }
 
                 //ghost movement returned based on ghostScan()
-                g1Move = ghostScan1(pacman, ghost1X, ghost1Y, pacmanX, pacmanY);
-                g2Move = ghostScan2(pacman, ghost2X, ghost2Y, pacmanX, pacmanY);
+                firstGhostMove = ghostScan1(pacman, firstGhostX, firstGhostY, pacmanX, pacmanY);
+                secondGhostMove = ghostScan2(pacman, secondGhostX, secondGhostY, pacmanX, pacmanY);
 
                 //Statements for moving ghost and keeping track of points:
                 //first ghost:
-                if (g1Move == UP) {
-                    ghost1Y -= 1;
-                } else if (g1Move == LEFT) {
-                    ghost1X -= 1;
-                } else if (g1Move == DOWN) {
-                    ghost1Y += 1;
-                } else if (g1Move == RIGHT) {
-                    ghost1X += 1;
+                if (firstGhostMove == UP) {
+                    firstGhostY -= 1;
+                } else if (firstGhostMove == LEFT) {
+                    firstGhostX -= 1;
+                } else if (firstGhostMove == DOWN) {
+                    firstGhostY += 1;
+                } else if (firstGhostMove == RIGHT) {
+                    firstGhostX += 1;
                 }
                 //second ghost
-                if (g2Move == UP) {
-                    ghost2Y -= 1;
-                } else if (g2Move == LEFT) {
-                    ghost2X -= 1;
-                } else if (g2Move == DOWN) {
-                    ghost2Y += 1;
-                } else if (g2Move == RIGHT) {
-                    ghost2X += 1;
+                if (secondGhostMove == UP) {
+                    secondGhostY -= 1;
+                } else if (secondGhostMove == LEFT) {
+                    secondGhostX -= 1;
+                } else if (secondGhostMove == DOWN) {
+                    secondGhostY += 1;
+                } else if (secondGhostMove == RIGHT) {
+                    secondGhostX += 1;
                 }
 
                 system("CLS");
-                printpacman(pacman, pacmanX, pacmanY, ghost1X, ghost1Y, ghost2X, ghost2Y);
+                printpacman(pacman, pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY);
 
                 if (winCheck(points) == 1) {
                     printf("Congratulations! You win! Press any key to exit the game\n");
                     system("pause");
                     break;
                 }
-                if (loseCheck(pacmanX, pacmanY, ghost1X, ghost1Y, ghost2X, ghost2Y) == 1) {
+                if (loseCheck(pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY) == 1) {
                     printf("Sorry, you lose. Press any key to exit the game\n");
                     system("pause");
                     break;
