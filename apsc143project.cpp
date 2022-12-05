@@ -129,7 +129,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
             }
         }
     }
-    //If can't find pacman it will switch to a random direction and look. Looks for walls before it does this to see if it can keep moving where it is going.
+    //If can't find Pacman it will switch to a random direction and look. Looks for walls before it does this to see if it can keep moving where it is going.
     else {
         int num;
         srand(time(NULL));
