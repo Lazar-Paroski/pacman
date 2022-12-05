@@ -345,3 +345,4 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
             }
         }
     }
+// Yay the code is done!!
