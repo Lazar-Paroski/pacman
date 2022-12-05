@@ -300,7 +300,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                     break;
                 }
 
-                //Defining variables based on the gostScan functions
+                //Defining variables based on the ghostScan functions
                 firstGhostMove = ghostScan1(pacman, firstGhostX, firstGhostY, pacmanX, pacmanY);
                 secondGhostMove = ghostScan2(pacman, secondGhostX, secondGhostY, pacmanX, pacmanY);
 
@@ -329,7 +329,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                 system("CLS");
                 printpacman(pacman, pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY);
 
-                // Checking if teh game is won
+                // Checking if the game is won
                 if (winCheck(points) == 1) {
                     printf("Congratulations! You win! Press any key to exit the game\n");
                     system("pause");
