@@ -19,7 +19,9 @@
 // Make sure to specify the required parameters, if any.
 
 
-
+//Prints out pacman and the ghosts
+//Has pacman eat the dots
+//changes the colors
 void printpacman(char** pacman, int pacmanX, int pacmanY, int firstGhostX, int firstGhostY, int secondGhostX, int secondGhostY){
     for (int i = 0; i < 11; i++) {
         for (int j = 0; j < 11; j++) {
@@ -48,12 +50,15 @@ void printpacman(char** pacman, int pacmanX, int pacmanY, int firstGhostX, int f
     }
 }
 
+//Checks to see if you won the game by checking if all the dots are eaten
 int winCheck(int score){
     if(score == 54){
         return 1;
     }
     return 0;
 }
+
+//Checks to see if you lost the game by checking if the pac man is touching a ghost
 int loseCheck(int pacmanX, int pacmanY, int firstGhostX, int firstGhostY, int secondGhostX, int secondGhostY){
     if( (pacmanX == firstGhostX && pacmanY == firstGhostY)  )
     {
@@ -64,8 +69,7 @@ int loseCheck(int pacmanX, int pacmanY, int firstGhostX, int firstGhostY, int se
     return 0;
 }
 
-//checking if pacman will run into a wall
-//note: I added surrounding walls to the pacman.txt file, so I only check if it is a wall and don't check for out of bounds
+// Sees if there is a wall beside the pacman depending on the keyboard input
 int isWall(char** map, int xMove, int yMove, char d){
     if( d == UP && map[yMove-1][xMove] != 'W'){
         return 1;
@@ -83,10 +87,10 @@ int isWall(char** map, int xMove, int yMove, char d){
     return 0;
 }
 
+// Scans any clear lines of view until the wall to see if it can see pacman
 char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
-    //checks if ghost and are on the same row and scans its left side for pacman until a wall
     if (pacmanY == ghostY && ghostX > pacmanX) {
-        //Checks left
+        //Looks to its left
         for (int i = ghostX; i > 0; i--) {
             if (map[ghostY][i] == 'W') {
                 break;
@@ -95,9 +99,8 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
             }
         }
     }
-        //Checks if ghost are on same row and scans its right side for pacman until a wall
     else if (pacmanY == ghostY && ghostX < pacmanX) {
-        //Checks right
+        //Looks to its right
         for (int i = ghostX; i < 10; i++) {
             if (map[ghostY][i] == 'W') {
                 break;
@@ -106,9 +109,8 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
             }
         }
     }
-        //Checks if ghost are on the same column and scans above for pacman until a wall
     else if (pacmanX == ghostX && ghostY > pacmanY) {
-        //Checks above
+        //Looks to the top
         for (int i = ghostY; i > 0; i--) {
             if (map[i][ghostX] == 'W') {
                 break;
@@ -117,9 +119,8 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
             }
         }
     }
-        //Checks if ghost are on the same column and scans below for pacman until a wall
     else if (pacmanX == ghostX && ghostY < pacmanY) {
-        //Checks below
+        //Looks to the bottom
         for (int i = ghostY; i < 10; i++) {
             if (map[i][ghostX] == 'W') {
                 break;
@@ -128,7 +129,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
             }
         }
     }
-        //If it does not see pacman, it checks for walls and sees if its still able to move in that direction. If not, it will switch to random direction and check again.
+    //If can't find pacman it will switch to a random direction and look. Looks for walls before it does this to see if it can keep moving where it is going.
     else {
         int num;
         srand(time(NULL));
@@ -146,10 +147,10 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
         }
     }
 }
+    // Does the same thing as the first ghost scan but now with the second ghost
     char ghostScan2(char **map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
-        //checks if ghost and are on the same row and scans its left side for pacman until a wall
         if (pacmanY == ghostY && ghostX > pacmanX) {
-            //Checks left
+            // Looks to its left
             for (int i = ghostX; i > 0; i--) {
                 if (map[ghostY][i] == 'W') {
                     break;
@@ -158,9 +159,8 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                 }
             }
         }
-            //Checks if ghost are on same row and scans its right side for pacman until a wall
         else if (pacmanY == ghostY && ghostX < pacmanX) {
-            //Checks right
+            //Looks to its right
             for (int i = ghostX; i < 10; i++) {
                 if (map[ghostY][i] == 'W') {
                     break;
@@ -169,9 +169,8 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                 }
             }
         }
-            //Checks if ghost are on the same column and scans above for pacman until a wall
         else if (pacmanX == ghostX && ghostY > pacmanY) {
-            //Checks above
+            //Looks to the top
             for (int i = ghostY; i > 0; i--) {
                 if (map[i][ghostX] == 'W') {
                     break;
@@ -180,9 +179,8 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                 }
             }
         }
-            //Checks if ghost are on the same column and scans below for pacman until a wall
         else if (pacmanX == ghostX && ghostY < pacmanY) {
-            //Checks below
+            //Looks to the bottom
             for (int i = ghostY; i < 10; i++) {
                 if (map[i][ghostX] == 'W') {
                     break;
@@ -191,7 +189,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                 }
             }
         }
-            //If it does not see pacman, it checks for walls and sees if its still able to move in that direction. If not, it will switch to random direction and check again.
+        //If can't find pacman it will switch to a random direction and look. Looks for walls before it does this to see if it can keep moving where it is going.
         else {
             int num;
             srand(time(NULL));
@@ -211,17 +209,19 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
 }
     int main() {
 
+        // Opening the given file
         FILE *fptr = fopen("C:\\Users\\lazar\\CLionProjects\\EngProj\\map.txt", "r");
         if (fptr == NULL) {
             printf("File not found.\n");
         } else {
+            // Allocating memory
             char **pacman = (char **) malloc(11 * sizeof(char *));
 
             for (int i = 0; i < 11; i++) {
-
-                //Setup column of pointer array & grab all elements from text file:
+                // Making pointer array to get elements from the text file
                 pacman[i] = (char *) malloc(11 * sizeof(char));
 
+                // Making the array
                 fscanf(fptr, "%c  %c  %c  %c  %c  %c  %c  %c  %c  %c  %c\n", &pacman[i][0], &pacman[i][1],
                        &pacman[i][2],
                        &pacman[i][3], &pacman[i][4], &pacman[i][5], &pacman[i][6], &pacman[i][7], &pacman[i][8],
@@ -233,6 +233,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
             pacman[9][9] = '.';
             pacman[5][5] = ' ';
 
+            // Assigning variables values
             int pacmanX = 5;
             int pacmanY = 5;
             int firstGhostX = 1;
@@ -244,10 +245,13 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
             char secondGhostMove = 'w';
             char userInput;
 
+            //Printing all the characters on the map
             printpacman(pacman, pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY);
 
+            // Taking the user input from the keyboard
             while (true) {
                 userInput = getch();
+                // What happens if user clicks 'w'
                 if (userInput == UP){
                     if(isWall(pacman, pacmanX, pacmanY, UP) == 1) {
                         pacmanY -= 1;
@@ -257,6 +261,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                         }
                     }
                 }
+                // What happens if user clicks 'a'
                 else if (userInput == LEFT){
                     if (isWall(pacman, pacmanX, pacmanY, LEFT) == 1) {
                         pacmanX -= 1;
@@ -266,6 +271,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                         }
                     }
                 }
+                // What happens if user clicks 's'
                 else if (userInput == DOWN){
                     if(isWall(pacman, pacmanX, pacmanY, DOWN) == 1) {
                         pacmanY += 1;
@@ -275,6 +281,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                         }
                     }
                 }
+                // What happens if user clicks 'd'
                 else if (userInput == RIGHT){
                     if(isWall(pacman, pacmanX, pacmanY, RIGHT) == 1) {
                         pacmanX += 1;
@@ -284,6 +291,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                         }
                     }
                 }
+                // what happens if you lose the game
                 if (loseCheck(pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY) == 1) {
                     system("CLS");
                     printpacman(pacman, pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY);
@@ -292,12 +300,11 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                     break;
                 }
 
-                //ghost movement returned based on ghostScan()
+                //Defining variables based on the gostScan functions
                 firstGhostMove = ghostScan1(pacman, firstGhostX, firstGhostY, pacmanX, pacmanY);
                 secondGhostMove = ghostScan2(pacman, secondGhostX, secondGhostY, pacmanX, pacmanY);
 
-                //Statements for moving ghost and keeping track of points:
-                //first ghost:
+                //Changing the first ghosts x and y coordinates based on where they are going
                 if (firstGhostMove == UP) {
                     firstGhostY -= 1;
                 } else if (firstGhostMove == LEFT) {
@@ -307,7 +314,7 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                 } else if (firstGhostMove == RIGHT) {
                     firstGhostX += 1;
                 }
-                //second ghost
+                //Changing the second ghosts x and y coordinates based on where they are going
                 if (secondGhostMove == UP) {
                     secondGhostY -= 1;
                 } else if (secondGhostMove == LEFT) {
@@ -318,14 +325,17 @@ char ghostScan1(char** map, int ghostX, int ghostY, int pacmanX, int pacmanY) {
                     secondGhostX += 1;
                 }
 
+                //Printing all the characters
                 system("CLS");
                 printpacman(pacman, pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY);
 
+                // Checking if teh game is won
                 if (winCheck(points) == 1) {
                     printf("Congratulations! You win! Press any key to exit the game\n");
                     system("pause");
                     break;
                 }
+                // Checking if the game is lost
                 if (loseCheck(pacmanX, pacmanY, firstGhostX, firstGhostY, secondGhostX, secondGhostY) == 1) {
                     printf("Sorry, you lose. Press any key to exit the game\n");
                     system("pause");
